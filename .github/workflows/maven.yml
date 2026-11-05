@@ -1,0 +1,49 @@
+name: Verificacion Nexo
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci_test_only_nexo123
+          MYSQL_ROOT_HOST: '%'
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pci_test_only_nexo123"
+          --health-interval=10s --health-timeout=5s --health-retries=15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Compilar y verificar con H2
+        run: mvn -B -ntp verify
+      - name: Conservar resultado H2
+        run: mkdir -p evidencia && cp -R target/surefire-reports evidencia/h2
+      - name: Crear esquema MySQL temporal
+        env:
+          MYSQL_PWD: ci_test_only_nexo123
+        run: mysql -h 127.0.0.1 -P 3306 -u root < src/main/resources/creaTablas.sql
+      - name: Verificar con MySQL
+        env:
+          NEXO_TEST_DB_URL: jdbc:mysql://127.0.0.1:3306/nexo?allowPublicKeyRetrieval=true&useSSL=false
+          NEXO_TEST_DB_USER: root
+          NEXO_TEST_DB_PASSWORD: ci_test_only_nexo123
+          NEXO_TEST_DB_DRIVER: com.mysql.cj.jdbc.Driver
+          NEXO_TEST_DB_DIALECT: org.hibernate.dialect.MySQLDialect
+          NEXO_TEST_DB_DDL: validate
+        run: mvn -B -ntp test
+      - name: Conservar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pruebas-nexo
+          path: |
+            evidencia/
+            target/surefire-reports/

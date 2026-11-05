@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head>
+<body class="nexo-body">
+<aside th:replace="~{general/fragmentos :: sidebar('liquidaciones')}"></aside>
+<div class="nexo-workspace">
+<header th:replace="~{general/fragmentos :: header('Liquidaciones')}"></header>
+<main class="nexo-main container-fluid p-3 p-lg-4">
+<section th:replace="~{general/fragmentos :: mensajes}"></section>
+<p class="nexo-kicker mb-2">Nexo / Liquidaciones</p><h1 class="mb-4">Liquidaciones</h1>
+<section class="card"><div class="card-body table-responsive">
+<p th:if="${liquidaciones.empty}" class="text-secondary">Importe un CSV del proveedor para consultar sus liquidaciones.</p>
+<table class="table align-middle" th:unless="${liquidaciones.empty}"><thead><tr><th>Referencia</th><th>Proveedor</th><th>Fecha</th><th>Total reportado</th><th>Estado</th><th></th></tr></thead><tbody><tr th:each="l : ${liquidaciones}">
+<td th:text="${l.referencia}"></td><td th:text="${l.fuentePago.nombre}"></td><td th:text="${l.fecha}"></td><td><span th:text="${#numbers.formatDecimal(l.importeReportado,1,2)}"></span> <span th:text="${l.moneda}"></span></td><td th:text="${conciliadas.containsKey(l.id) ? 'Con conciliación' : 'Pendiente de revisión'}"></td><td><a class="btn btn-outline-primary btn-sm" th:href="@{/liquidacion/detalle/{id}(id=${l.id})}">Ver movimientos</a></td>
+</tr></tbody></table></div></section>
+</main>
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+</div></body></html>

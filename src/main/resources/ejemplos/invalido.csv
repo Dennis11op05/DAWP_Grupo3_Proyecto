@@ -1,0 +1,3 @@
+liquidacion,referencia,tipo,fecha,importe,moneda,referencia_original
+LIQ-INVALIDA,OP-BIEN,COBRO,2026-11-01,100.00,CRC,
+LIQ-INVALIDA,OP-MAL,COBRO,fecha-incorrecta,abc,CRC,

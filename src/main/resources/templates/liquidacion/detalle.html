@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head>
+<body class="nexo-body">
+<aside th:replace="~{general/fragmentos :: sidebar('liquidaciones')}"></aside>
+<div class="nexo-workspace">
+<header th:replace="~{general/fragmentos :: header('Detalle de liquidación')}"></header>
+<main class="nexo-main container-fluid p-3 p-lg-4">
+<section th:replace="~{general/fragmentos :: mensajes}"></section>
+<p class="nexo-kicker mb-2">Nexo / Detalle de liquidación</p><h1 class="mb-4">Detalle de liquidación</h1>
+<section class="card mb-4"><div class="card-body"><h2 class="h5" th:text="${liquidacion.referencia}"></h2><p><span th:text="${liquidacion.fuentePago.nombre}"></span> · <span th:text="${liquidacion.fecha}"></span> · <span th:text="${liquidacion.moneda}"></span></p>
+<div class="row g-3 mb-3"><div class="col-md-6"><span class="text-secondary">Total reportado</span><p class="h4" th:text="${#numbers.formatDecimal(liquidacion.importeReportado,1,2)}"></p></div><div class="col-md-6"><span class="text-secondary">Neto de movimientos</span><p class="h4" th:text="${#numbers.formatDecimal(neto,1,2)}"></p></div></div>
+<a class="btn btn-primary" th:if="${conciliacionId != null}" th:href="@{/conciliacion/detalle/{id}(id=${conciliacionId})}">Consultar conciliación</a>
+<form th:if="${conciliacionId == null and rolesActuales.contains('ANALISTA')}" method="post" th:action="@{/conciliacion/iniciar}"><input type="hidden" name="liquidacionId" th:value="${liquidacion.id}"/><p class="small text-secondary">Compruebe que ya importó los registros internos de esta liquidación. Al iniciar, se protegerán los datos importados.</p><button class="btn btn-primary" type="submit">Iniciar conciliación</button></form>
+</div></section>
+<section class="card"><div class="card-header"><h2 class="h6 mb-0">Movimientos del proveedor</h2></div><div class="card-body table-responsive"><table class="table align-middle"><thead><tr><th>Referencia</th><th>Tipo</th><th>Fecha</th><th>Importe</th><th>Moneda</th><th>Referencia original</th></tr></thead><tbody><tr th:each="m : ${movimientos}"><td th:text="${m.referencia}"></td><td th:text="${m.tipo}"></td><td th:text="${m.fecha}"></td><td th:text="${#numbers.formatDecimal(m.importeNeto,1,2)}"></td><td th:text="${m.moneda}"></td><td th:text="${m.referenciaOriginal}"></td></tr></tbody></table></div></section>
+</main>
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+</div></body></html>

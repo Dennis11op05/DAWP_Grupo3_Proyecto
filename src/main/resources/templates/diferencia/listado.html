@@ -1,0 +1,8 @@
+<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head><body class="nexo-body">
+<aside th:replace="~{general/fragmentos :: sidebar('diferencias')}"></aside><div class="nexo-workspace">
+<header th:replace="~{general/fragmentos :: header('Reporte de diferencias')}"></header>
+<main class="nexo-main container-fluid p-3 p-lg-4"><section th:replace="~{general/fragmentos :: mensajes}"></section>
+<p class="nexo-kicker mb-2">Nexo / Reporte de diferencias</p><h1 class="mb-4">Reporte de diferencias</h1>
+<p class="text-secondary">Consulte las discrepancias, su estado y la conciliación relacionada.</p><section class="card"><div class="card-body"><div th:replace="~{diferencia/fragmentos :: tabla(${diferencias})}"></div></div></section>
+</main><footer th:replace="~{general/fragmentos :: footer}"></footer></div></body></html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body class="nexo-body">
+        <aside th:replace="~{general/fragmentos :: sidebar('fuente')}"></aside>
+        <div class="nexo-workspace">
+            <header th:replace="~{general/fragmentos :: header('Fuente de pago')}"></header>
+            <main class="nexo-main container-fluid p-3 p-lg-4">
+                <section th:replace="~{general/fragmentos :: mensajes}"></section>
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                    <div>
+                        <p class="nexo-kicker mb-2">Administración de fuente</p>
+                        <h1>Fuente de pago</h1>
+                        <p class="text-secondary mb-0">Configure el proveedor utilizado para importar liquidaciones y conciliar pagos.</p>
+                    </div>
+                    <a th:if="${!fuentesPago.empty}" class="btn btn-outline-primary" th:href="@{/fuente-pago/listado(nuevo=true)}">Agregar fuente</a>
+                </div>
+                <div class="row g-4 align-items-start">
+                    <section class="col-xl-6" aria-label="Fuentes configuradas"><div th:replace="~{fuente-pago/fragmentos :: listado}"></div></section>
+                    <section class="col-xl-6" aria-label="Configuración del proveedor"><div th:replace="~{fuente-pago/fragmentos :: formulario}"></div></section>
+                </div>
+                <section th:replace="~{fuente-pago/fragmentos :: confirmarEstado}"></section>
+                <section th:replace="~{fuente-pago/fragmentos :: confirmarEliminar}"></section>
+            </main>
+            <footer th:replace="~{general/fragmentos :: footer}"></footer>
+        </div>
+    </body>
+</html>

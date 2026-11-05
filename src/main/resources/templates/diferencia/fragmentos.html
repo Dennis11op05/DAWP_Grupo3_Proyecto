@@ -1,0 +1,6 @@
+<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org"><body>
+<section th:fragment="tabla(lista)">
+<p class="text-secondary mb-0" th:if="${lista.empty}">No hay diferencias registradas.</p>
+<div class="table-responsive" th:unless="${lista.empty}"><table class="table align-middle"><thead><tr><th>Tipo y descripción</th><th>Conciliación</th><th>Estado</th><th>Importe</th><th></th></tr></thead><tbody>
+<tr th:each="d : ${lista}"><td><span class="fw-semibold" th:text="${d.tipo}"></span><small class="d-block text-secondary" th:text="${d.descripcion}"></small></td><td th:text="${d.conciliacion.liquidacion.referencia}"></td><td><span class="badge" th:classappend="${d.estado == 'RESUELTA' ? 'text-bg-success' : 'text-bg-warning'}" th:text="${d.estado}"></span></td><td><span th:text="${d.importe == null ? 'No aplica' : #numbers.formatDecimal(d.importe,1,2)}"></span> <span th:if="${d.importe != null}" th:text="${d.conciliacion.liquidacion.moneda}"></span></td><td><a class="btn btn-outline-primary btn-sm" th:href="@{/diferencia/detalle/{id}(id=${d.id})}">Revisar</a></td></tr>
+</tbody></table></div></section></body></html>
