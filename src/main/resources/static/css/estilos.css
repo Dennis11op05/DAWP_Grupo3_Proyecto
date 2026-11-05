@@ -1,0 +1,41 @@
+/* Estructura y colores basados en el prototipo NEXO. Bootstrap mantiene
+   la distribución, formularios, modales, alertas y adaptación a pantallas. */
+:root {
+    --nexo-sidebar: #152b40;
+    --nexo-sidebar-active: #294b68;
+    --nexo-background: #f5f6fb;
+    --nexo-border: #e7eaf0;
+    --nexo-text: #263446;
+}
+
+.nexo-body { background: var(--nexo-background); color: var(--nexo-text); font-size: .9rem; }
+.nexo-sidebar { --bs-offcanvas-width: 220px; background-color: var(--nexo-sidebar) !important; color: #fff; }
+.nexo-brand { color: #fff; font-size: 1.5rem; font-weight: 700; letter-spacing: .04em; text-decoration: none; }
+.nexo-brand:hover { color: #fff; }
+.nexo-sidebar-description { color: #bdcbd8; font-size: .75rem; line-height: 1.7; }
+.nexo-sidebar .nav-link { border-radius: .25rem; color: #bdcbd8; padding: .75rem; }
+.nexo-sidebar .nav-link:hover { background: #203c55; color: #fff; }
+.nexo-sidebar .nav-link.active { background: var(--nexo-sidebar-active); color: #fff; font-weight: 600; }
+.nexo-topbar { min-height: 66px; background: #fff; border-bottom: 1px solid var(--nexo-border); }
+.nexo-breadcrumb { color: #64748b; font-size: .8rem; }
+.nexo-kicker { color: #64748b; font-size: .7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.nexo-main { max-width: 1440px; }
+.nexo-body h1 { font-size: 1.7rem; font-weight: 650; }
+.nexo-body .card { border-color: var(--nexo-border); border-radius: .3rem; }
+.nexo-body .card-header { background: #fff; border-bottom-color: var(--nexo-border); padding: 1rem 1.25rem; }
+.nexo-body .card-body { padding: 1.25rem; }
+.nexo-body .form-label { font-size: .8rem; font-weight: 600; }
+.nexo-body .form-control, .nexo-body .form-select { border-color: #dce1e9; font-size: .9rem; }
+.nexo-body .form-control.is-invalid, .nexo-body .form-select.is-invalid { border-color: var(--bs-danger); }
+.nexo-body .btn { border-radius: .25rem; font-size: .85rem; }
+.nexo-body .btn-primary { --bs-btn-bg: #2563eb; --bs-btn-border-color: #2563eb; --bs-btn-hover-bg: #1d4ed8; --bs-btn-hover-border-color: #1d4ed8; }
+.nexo-status-active { background: #eaf7f0; color: #267654; }
+.nexo-status-inactive { background: #fceced; color: #a43847; }
+.nexo-source-details { background: #fafbfc; border: 1px solid var(--nexo-border); border-radius: .25rem; }
+.nexo-footer { color: #64748b; font-size: .75rem; }
+
+@media (min-width: 992px) {
+    .nexo-sidebar { position: fixed; inset: 0 auto 0 0; width: 220px; z-index: 1030; }
+    .nexo-sidebar .offcanvas-body { display: block; height: 100%; }
+    .nexo-workspace { margin-left: 220px; min-height: 100vh; }
+}

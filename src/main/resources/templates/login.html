@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head>
+<body class="nexo-body"><main class="container min-vh-100 d-flex justify-content-center align-items-center py-5">
+<section class="card shadow-sm w-100" style="max-width:440px"><div class="card-body p-4 p-md-5">
+<p class="nexo-kicker text-primary mb-2">Conciliación de pagos</p><h1 class="mb-2">NEXO</h1><p class="text-secondary mb-4">Inicie sesión con su cuenta de trabajo.</p>
+<div class="alert alert-danger" role="alert" th:if="${param.error != null}">Correo o contraseña incorrectos, o cuenta desactivada.</div>
+<div class="alert alert-success" role="status" th:if="${param.logout != null}">Sesión finalizada correctamente.</div>
+<div class="alert alert-warning" role="alert" th:if="${param.sesion != null}">Sus permisos o el estado de su cuenta cambiaron. Inicie sesión nuevamente.</div>
+<form method="post" th:action="@{/login}"><div class="mb-3"><label class="form-label" for="correo">Correo electrónico</label><input class="form-control" id="correo" name="correo" type="email" maxlength="150" required autocomplete="username" autofocus/></div><div class="mb-4"><label class="form-label" for="password">Contraseña</label><input class="form-control" id="password" name="password" type="password" required autocomplete="current-password"/></div><button class="btn btn-primary w-100" type="submit">Iniciar sesión</button></form>
+<p class="small text-secondary mt-4 mb-0">Solicite al administrador el registro o la reactivación de su cuenta.</p>
+</div></section></main></body></html>

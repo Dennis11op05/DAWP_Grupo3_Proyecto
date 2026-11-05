@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head>
+<body class="nexo-body">
+<aside th:replace="~{general/fragmentos :: sidebar('usuarios')}"></aside>
+<div class="nexo-workspace">
+<header th:replace="~{general/fragmentos :: header('Gestión de usuarios')}"></header>
+<main class="nexo-main container-fluid p-3 p-lg-4">
+<section th:replace="~{general/fragmentos :: mensajes}"></section>
+<p class="nexo-kicker mb-2">Nexo / Gestión de usuarios</p><h1 class="mb-4">Gestión de usuarios</h1>
+<div class="row g-4 align-items-start">
+<section class="col-xl-7"><div class="card"><div class="card-header"><h2 class="h6 mb-0">Usuarios registrados</h2></div><div class="card-body table-responsive">
+<table class="table align-middle"><thead><tr><th>Nombre y correo</th><th>Roles</th><th>Estado</th><th></th></tr></thead><tbody>
+<tr th:each="u : ${usuarios}"><td><span th:text="${u.nombre}"></span><small class="d-block text-secondary" th:text="${u.correo}"></small></td><td><span class="badge text-bg-light me-1" th:each="r : ${u.roles}" th:text="${r.codigo}"></span></td><td th:text="${u.activo ? 'Activo' : 'Desactivado'}"></td><td><a class="btn btn-outline-primary btn-sm" th:href="@{/usuario/modificar/{id}(id=${u.id})}">Editar</a></td></tr>
+</tbody></table></div></div></section>
+<section class="col-xl-5"><div class="card"><div class="card-header"><h2 class="h6 mb-0" th:text="${formulario.id == null ? 'Registrar usuario' : 'Editar usuario y permisos'}"></h2></div><div class="card-body">
+<form method="post" th:action="@{/usuario/guardar}" th:object="${formulario}">
+<input type="hidden" th:field="*{id}"/>
+<div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}"><p class="mb-1" th:each="e : ${#fields.allErrors()}" th:text="${e}"></p></div>
+<div class="mb-3"><label class="form-label" for="nombre">Nombre</label><input class="form-control" th:field="*{nombre}" maxlength="100" required/></div>
+<div class="mb-3"><label class="form-label" for="correo">Correo electrónico</label><input class="form-control" type="email" th:field="*{correo}" maxlength="150" required/></div>
+<div class="mb-3"><label class="form-label" for="password">Contraseña</label><input class="form-control" type="password" id="password" name="password" minlength="10" maxlength="64" th:required="${formulario.id == null}" autocomplete="new-password"/><p class="form-text">De 10 a 64 caracteres. Al editar, déjela vacía para conservar la contraseña actual.</p></div>
+<fieldset class="mb-3"><legend class="form-label">Roles</legend><div class="form-check" th:each="r : ${roles}"><input class="form-check-input" type="checkbox" th:field="*{roles}" th:value="${r.id}"/><label class="form-check-label" th:for="${#ids.prev('roles')}" th:text="${r.codigo}"></label></div></fieldset>
+<div class="form-check mb-3"><input class="form-check-input" type="checkbox" th:field="*{activo}"/><label class="form-check-label" for="activo">Cuenta activa</label></div>
+<p class="small text-secondary">Los cambios de estado o roles finalizan las sesiones que ya no tengan permisos vigentes. La desactivación conserva el historial.</p>
+<button class="btn btn-primary" type="submit">Guardar usuario</button><a class="btn btn-outline-secondary ms-2" th:href="@{/usuario/listado}">Nuevo / cancelar</a>
+</form></div></div></section></div>
+</main>
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+</div></body></html>

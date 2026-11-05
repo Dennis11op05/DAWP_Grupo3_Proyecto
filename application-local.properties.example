@@ -1,0 +1,7 @@
+# Copiar a application-local.properties y completar. No subir el archivo local.
+spring.datasource.url=jdbc:mysql://localhost:3306/nexo
+spring.datasource.username=nexo
+spring.datasource.password=
+# Solo se utiliza para crear el primer administrador si no existen usuarios.
+nexo.admin.correo=
+nexo.admin.password=

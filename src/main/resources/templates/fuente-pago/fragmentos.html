@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <section th:fragment="listado">
+            <div class="card" th:if="${fuentesPago.empty}">
+                <div class="card-header"><h2 class="h6 mb-0">Fuente configurada</h2></div>
+                <div class="card-body"><p class="mb-0 text-secondary">No hay fuentes de pago registradas. Complete la configuración del proveedor para comenzar.</p></div>
+            </div>
+            <article class="card mb-3" th:each="fuente : ${fuentesPago}">
+                <div class="card-header"><h2 class="h6 mb-0">Fuente configurada</h2></div>
+                <div class="card-body">
+                    <span class="badge mb-3" th:classappend="${fuente.activo ? 'nexo-status-active' : 'nexo-status-inactive'}" th:text="${fuente.activo ? 'Activa' : 'Desactivada'}"></span>
+                    <h3 class="h5 mb-3" th:text="${fuente.nombre}"></h3>
+                    <dl class="row nexo-source-details g-0 p-3 mb-3">
+                        <div class="col-6"><dt class="small text-secondary fw-normal mb-1">Código</dt><dd class="mb-0 fw-semibold" th:text="${fuente.codigo}"></dd></div>
+                        <div class="col-6"><dt class="small text-secondary fw-normal mb-1">Moneda</dt><dd class="mb-0 fw-semibold" th:text="${fuente.moneda}"></dd></div>
+                    </dl>
+                    <p class="small text-secondary" th:text="${fuente.activo ? 'Fuente de pago activa.' : 'Fuente desactivada. Su configuración se conserva.'}"></p>
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <a class="btn btn-outline-secondary" th:href="@{/fuente-pago/modificar/{id}(id=${fuente.idFuentePago})}">Editar</a>
+                        <button th:if="${fuente.activo}" class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#confirmarEstado"
+                                th:data-id="${fuente.idFuentePago}" th:data-nombre="${fuente.nombre}">Desactivar</button>
+                        <form th:unless="${fuente.activo}" method="post" th:action="@{/fuente-pago/estado}">
+                            <input type="hidden" name="idFuentePago" th:value="${fuente.idFuentePago}"/>
+                            <input type="hidden" name="activo" value="true"/>
+                            <button class="btn btn-primary" type="submit">Activar</button>
+                        </form>
+                        <button class="btn btn-link text-secondary ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#confirmarEliminar"
+                                th:data-id="${fuente.idFuentePago}" th:data-nombre="${fuente.nombre}">Eliminar</button>
+                    </div>
+                </div>
+            </article>
+        </section>
+        <section th:fragment="formulario" class="card" id="configuracionProveedor">
+            <div class="card-header"><h2 class="h6 mb-0" th:text="${fuentePago.idFuentePago == null ? 'Configurar proveedor' : 'Editar configuración'}"></h2></div>
+            <div class="card-body">
+                <form th:action="@{/fuente-pago/guardar}" th:object="${fuentePago}" method="post">
+                    <input type="hidden" th:field="*{idFuentePago}"/>
+                    <div class="alert alert-danger small" th:if="${#fields.hasGlobalErrors()}" role="alert"><p class="mb-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p></div>
+                    <div class="row g-3">
+                        <div class="col-md-7"><label class="form-label" for="nombre">Nombre del proveedor <span aria-hidden="true">*</span></label>
+                            <input class="form-control" th:field="*{nombre}" maxlength="100" required th:classappend="${#fields.hasErrors('nombre') ? 'is-invalid' : ''}" aria-describedby="errorNombre"/>
+                            <div class="invalid-feedback" id="errorNombre" th:errors="*{nombre}"></div>
+                        </div>
+                        <div class="col-md-5"><label class="form-label" for="codigo">Código <span aria-hidden="true">*</span></label>
+                            <input class="form-control text-uppercase" th:field="*{codigo}" maxlength="30" required aria-describedby="ayudaCodigo errorCodigo" th:classappend="${#fields.hasErrors('codigo') ? 'is-invalid' : ''}"/>
+                            <div class="invalid-feedback" id="errorCodigo" th:errors="*{codigo}"></div>
+                        </div>
+                        <div class="col-md-7"><label class="form-label" for="moneda">Moneda <span aria-hidden="true">*</span></label>
+                            <select class="form-select" th:field="*{moneda}" required th:classappend="${#fields.hasErrors('moneda') ? 'is-invalid' : ''}" aria-describedby="errorMoneda">
+                                <option value="CRC">CRC · Colón costarricense</option><option value="USD">USD · Dólar estadounidense</option><option value="EUR">EUR · Euro</option>
+                            </select>
+                            <div class="invalid-feedback" id="errorMoneda" th:errors="*{moneda}"></div>
+                        </div>
+                        <div class="col-md-5"><label class="form-label" for="activo">Estado <span aria-hidden="true">*</span></label>
+                            <select class="form-select" th:field="*{activo}" required><option value="true">Activa</option><option value="false">Desactivada</option></select>
+                        </div>
+                    </div>
+                    <p class="form-text mt-3 mb-3" id="ayudaCodigo">El código identifica la fuente y debe ser único. Use letras, números, guiones o guiones bajos.</p>
+                    <div class="d-flex gap-2"><button class="btn btn-primary" type="submit">Guardar</button><a class="btn btn-outline-secondary" th:href="@{/fuente-pago/listado}">Cancelar</a></div>
+                </form>
+            </div>
+        </section>
+        <section th:fragment="confirmarEstado">
+            <div class="modal fade" id="confirmarEstado" tabindex="-1" aria-labelledby="tituloEstado" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+                    <form th:action="@{/fuente-pago/estado}" method="post">
+                        <div class="modal-header"><h2 class="modal-title h5" id="tituloEstado">Desactivar fuente de pago</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idFuentePago" id="estadoId"/><input type="hidden" name="activo" value="false"/>
+                            <p>¿Desea desactivar <strong id="estadoNombre"></strong>?</p>
+                            <p class="text-secondary mb-0">Se conservará la configuración y podrá activar la fuente nuevamente.</p>
+                        </div>
+                        <div class="modal-footer"><button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-danger" type="submit">Desactivar fuente</button></div>
+                    </form>
+                </div></div>
+            </div>
+        </section>
+        <section th:fragment="confirmarEliminar">
+            <div class="modal fade" id="confirmarEliminar" tabindex="-1" aria-labelledby="tituloEliminar" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+                    <form th:action="@{/fuente-pago/eliminar}" method="post">
+                        <div class="modal-header"><h2 class="modal-title h5" id="tituloEliminar">Eliminar fuente de pago</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idFuentePago" id="eliminarId"/>
+                            <p>¿Desea eliminar <strong id="eliminarNombre"></strong>?</p>
+                            <p class="text-secondary mb-0">Si desea conservar el proveedor, puede desactivar la fuente.</p>
+                        </div>
+                        <div class="modal-footer"><button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-danger" type="submit">Eliminar</button></div>
+                    </form>
+                </div></div>
+            </div>
+        </section>
+    </body>
+</html>

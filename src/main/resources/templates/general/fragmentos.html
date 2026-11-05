@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="head">
+        <title th:text="#{aplicacion.titulo}">Nexo</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
+        <script th:src="@{/js/rutinas.js}" defer></script>
+    </head>
+    <body>
+        <aside th:fragment="sidebar(pagina)" class="offcanvas-lg offcanvas-start nexo-sidebar" tabindex="-1" id="menuLateral" aria-label="Navegación principal">
+            <div class="offcanvas-header">
+                <span class="nexo-brand">NEXO</span>
+                <button class="btn-close btn-close-white" type="button" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Cerrar menú"></button>
+            </div>
+            <div class="offcanvas-body p-3 p-lg-4">
+                <a class="nexo-brand d-none d-lg-block mb-4" th:href="@{/}">NEXO</a>
+                <p class="nexo-sidebar-description mb-4">Servicios Digitales<br/>Conciliación de pagos</p>
+                <nav class="nav flex-column gap-2">
+                    <a class="nav-link" th:classappend="${pagina == 'inicio' ? 'active' : ''}" th:href="@{/}">Dashboard</a>
+                    <a class="nav-link" th:if="${rolesActuales.contains('ADMIN') or rolesActuales.contains('ANALISTA')}" th:classappend="${pagina == 'importaciones' ? 'active' : ''}" th:href="@{/importacion/listado}">Importaciones</a>
+                    <a class="nav-link" th:if="${rolesActuales.contains('ANALISTA') or rolesActuales.contains('SUPERVISOR')}" th:classappend="${pagina == 'liquidaciones' ? 'active' : ''}" th:href="@{/liquidacion/listado}">Liquidaciones</a>
+                    <a class="nav-link" th:if="${rolesActuales.contains('ANALISTA') or rolesActuales.contains('SUPERVISOR')}" th:classappend="${pagina == 'conciliaciones' ? 'active' : ''}" th:href="@{/conciliacion/listado}">Conciliaciones</a>
+                    <a class="nav-link" th:if="${rolesActuales.contains('ANALISTA') or rolesActuales.contains('SUPERVISOR')}" th:classappend="${pagina == 'diferencias' ? 'active' : ''}" th:href="@{/diferencia/listado}">Diferencias</a>
+                    <a class="nav-link" th:if="${rolesActuales.contains('ADMIN')}" th:classappend="${pagina == 'usuarios' ? 'active' : ''}" th:href="@{/usuario/listado}">Usuarios</a>
+                    <a class="nav-link" th:if="${rolesActuales.contains('ADMIN')}" th:classappend="${pagina == 'fuente' ? 'active' : ''}" th:href="@{/fuente-pago/listado}">Fuente de pago</a>
+                </nav>
+            </div>
+        </aside>
+        <header th:fragment="header(titulo)" class="nexo-topbar px-3 px-lg-4 d-flex flex-wrap align-items-center gap-3">
+            <button class="btn btn-outline-secondary btn-sm d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral">Menú</button>
+            <nav class="nexo-breadcrumb" aria-label="Ruta de navegación"><a class="text-secondary text-decoration-none" th:href="@{/}">NEXO</a><span class="mx-2" aria-hidden="true">/</span><span th:text="${titulo}"></span></nav>
+            <div class="ms-auto d-flex flex-wrap align-items-center gap-2 py-2"><span class="small" th:text="${nombreActual}"></span><span class="badge text-bg-light d-none d-md-inline" th:each="rol : ${rolesActuales}" th:text="${rol}"></span><form method="post" th:action="@{/logout}"><button class="btn btn-outline-secondary btn-sm" type="submit">Cerrar sesión</button></form></div>
+        </header>
+        <section th:fragment="mensajes" aria-live="polite">
+            <div th:if="${todoOk}" class="alert alert-success" role="status" th:text="${todoOk}"></div>
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+        </section>
+        <footer th:fragment="footer" class="nexo-footer px-3 px-lg-4 py-4 mt-4">
+            <p class="mb-0" th:text="#{plantilla.derechos}">Nexo · Grupo 03</p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head>
+<body class="nexo-body">
+<aside th:replace="~{general/fragmentos :: sidebar('conciliaciones')}"></aside>
+<div class="nexo-workspace">
+<header th:replace="~{general/fragmentos :: header('Conciliaciones')}"></header>
+<main class="nexo-main container-fluid p-3 p-lg-4">
+<section th:replace="~{general/fragmentos :: mensajes}"></section>
+<p class="nexo-kicker mb-2">Nexo / Conciliaciones</p><h1 class="mb-4">Conciliaciones</h1>
+<form class="row g-3 mb-4" method="get" th:action="@{/conciliacion/listado}"><div class="col-md-5"><label class="form-label" for="referencia">Referencia de liquidación</label><input class="form-control" id="referencia" name="referencia" th:value="${referencia}" maxlength="80"/></div><div class="col-md-3"><label class="form-label" for="estado">Estado</label><select class="form-select" id="estado" name="estado"><option value="">Todos</option><option value="ABIERTA" th:selected="${estado == 'ABIERTA'}">Abierta</option><option value="CERRADA" th:selected="${estado == 'CERRADA'}">Cerrada</option></select></div><div class="col-md-4 d-flex align-items-end gap-2"><button class="btn btn-primary" type="submit">Buscar</button><a class="btn btn-outline-secondary" th:href="@{/conciliacion/listado}">Limpiar</a></div></form>
+<section class="card"><div class="card-body table-responsive"><p th:if="${conciliaciones.empty}" class="text-secondary">No hay conciliaciones para estos criterios.</p><table class="table align-middle" th:unless="${conciliaciones.empty}"><thead><tr><th>Liquidación</th><th>Fecha / estado</th><th>Total calculado</th><th>Diferencia total</th><th>Responsables</th><th></th></tr></thead><tbody><tr th:each="c : ${conciliaciones}"><td th:text="${c.liquidacion.referencia}"></td><td><span th:text="${#temporals.format(c.fecha,'dd/MM/yyyy HH:mm')}"></span><span class="badge text-bg-light d-block mt-1" th:text="${c.estado}"></span></td><td><span th:text="${#numbers.formatDecimal(c.totalCalculado,1,2)}"></span> <span th:text="${c.liquidacion.moneda}"></span></td><td th:text="${#numbers.formatDecimal(c.diferenciaTotal,1,2)}"></td><td><small class="d-block" th:text="${'Creó: ' + c.creador.nombre}"></small><small class="d-block" th:if="${c.autorizante != null}" th:text="${'Cerró: ' + c.autorizante.nombre}"></small></td><td><a class="btn btn-outline-primary btn-sm" th:href="@{/conciliacion/detalle/{id}(id=${c.id})}">Ver detalle</a></td></tr></tbody></table></div></section>
+</main>
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+</div></body></html>

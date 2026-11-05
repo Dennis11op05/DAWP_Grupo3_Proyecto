@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}"></head>
+<body class="nexo-body">
+<aside th:replace="~{general/fragmentos :: sidebar('inicio')}"></aside>
+<div class="nexo-workspace">
+<header th:replace="~{general/fragmentos :: header('No se pudo completar la operación')}"></header>
+<main class="nexo-main container-fluid p-3 p-lg-4">
+<section th:replace="~{general/fragmentos :: mensajes}"></section>
+<p class="nexo-kicker mb-2">Nexo / No se pudo completar la operación</p><h1 class="mb-4">No se pudo completar la operación</h1>
+<div class="card"><div class="card-body"><p class="alert alert-warning" role="alert" th:text="${mensaje}"></p><p>Revise los datos y vuelva a consultar el registro antes de intentarlo nuevamente.</p><a class="btn btn-primary" th:href="@{/}">Volver al inicio</a></div></div>
+</main>
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+</div></body></html>

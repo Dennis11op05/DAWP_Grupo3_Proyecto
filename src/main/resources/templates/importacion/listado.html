@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body class="nexo-body">
+
+        <aside th:replace="~{general/fragmentos :: sidebar('importaciones')}"></aside>
+
+        <div class="nexo-workspace">
+
+            <header th:replace="~{general/fragmentos :: header('Importaciones')}"></header>
+
+            <main class="nexo-main container-fluid p-3 p-lg-4">
+
+                <section th:replace="~{general/fragmentos :: mensajes}"></section>
+
+                <p class="nexo-kicker mb-2">Nexo / Importaciones</p>
+                <h1 class="mb-4">Importaciones</h1>
+
+                <div class="row g-4 mb-4">
+
+                    <section class="col-12"
+                             th:if="${rolesActuales.contains('ANALISTA')}">
+
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h2 class="h6 mb-0">Importar archivo CSV</h2>
+                            </div>
+
+                            <div class="card-body">
+
+                                <p>
+                                    Importe primero las operaciones internas y luego
+                                    los movimientos del proveedor. Los archivos deben
+                                    estar completos antes de iniciar una conciliación.
+                                </p>
+
+                                <div class="alert alert-warning"
+                                     th:if="${fuentes.empty}">
+                                    No hay fuentes activas. Solicite al administrador
+                                    configurar una fuente de pago.
+                                </div>
+
+                                <form method="post"
+                                      enctype="multipart/form-data"
+                                      th:action="@{/importacion/guardar}">
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fuenteId">
+                                            Fuente de pago
+                                        </label>
+
+                                        <select id="fuenteId"
+                                                name="fuenteId"
+                                                class="form-select"
+                                                required>
+
+                                            <option value="">
+                                                Seleccione una fuente
+                                            </option>
+
+                                            <option th:each="f : ${fuentes}"
+                                                    th:value="${f.idFuentePago}"
+                                                    th:text="${f.nombre + ' · ' + f.moneda}">
+                                            </option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label" for="origen">
+                                            Origen
+                                        </label>
+
+                                        <select id="origen"
+                                                name="origen"
+                                                class="form-select">
+
+                                            <option value="INTERNO">
+                                                Operaciones internas
+                                            </option>
+
+                                            <option value="PROVEEDOR">
+                                                Liquidaciones y movimientos del proveedor
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label" for="archivo">
+                                            Archivo CSV
+                                        </label>
+
+                                        <input class="form-control"
+                                               type="file"
+                                               id="archivo"
+                                               name="archivo"
+                                               accept=".csv,text/csv"
+                                               required/>
+
+                                        <p class="form-text">
+                                            UTF-8, separador coma, máximo 5 MB y
+                                            10000 registros. Todos los registros
+                                            se guardan o se rechaza el archivo completo.
+                                        </p>
+
+                                    </div>
+
+                                    <button class="btn btn-primary"
+                                            type="submit"
+                                            th:disabled="${fuentes.empty}">
+                                        Validar e importar
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <section class="card">
+
+                    <div class="card-header">
+                        <h2 class="h6 mb-0">
+                            Historial de importaciones
+                        </h2>
+                    </div>
+
+                    <div class="card-body table-responsive">
+
+                        <p th:if="${lotes.empty}"
+                           class="text-secondary">
+                            No hay importaciones registradas.
+                        </p>
+
+                        <table class="table table-hover align-middle"
+                               th:unless="${lotes.empty}">
+
+                            <thead>
+                                <tr>
+                                    <th>Archivo / origen</th>
+                                    <th>Fuente</th>
+                                    <th>Responsable / fecha</th>
+                                    <th>Estado</th>
+                                    <th>Guardados</th>
+                                    <th>Resultado</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr th:each="l : ${lotes}">
+
+                                    <td>
+                                        <span th:text="${l.archivo}"></span>
+
+                                        <small class="d-block text-secondary"
+                                               th:text="${l.origen}">
+                                        </small>
+                                    </td>
+
+                                    <td th:text="${l.fuentePago.nombre}"></td>
+
+                                    <td>
+                                        <span th:text="${l.usuario.nombre}"></span>
+
+                                        <small class="d-block text-secondary"
+                                               th:text="${#temporals.format(l.fecha,'dd/MM/yyyy HH:mm')}">
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${l.estado == 'VALIDO' ? 'text-bg-success' : 'text-bg-danger'}"
+                                              th:text="${l.estado}">
+                                        </span>
+                                    </td>
+
+                                    <td th:text="${l.cantidad}"></td>
+
+                                    <td th:text="${l.resultado}"></td>
+
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+            <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+        </div>
+
+    </body>
+</html>
