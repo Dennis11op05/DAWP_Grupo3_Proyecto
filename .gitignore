@@ -1,0 +1,8 @@
+/target/
+/.cache/
+/.idea/
+/.vscode/
+*.log
+.env
+application-local.properties
+nbproject/private/
